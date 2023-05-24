@@ -24,4 +24,16 @@ public class EmployerController {
     public EmployerRequestTO save(@RequestBody EmployerRequestTO employerRequestDTO){
         return employerService.save(employerRequestDTO);
     }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PutMapping("/update/{id}")
+    public EmployerRequestTO updateEmployer(@PathVariable Long id, @RequestBody EmployerRequestTO employerRequestDTO){
+        return employerService.updateEmployer(id,employerRequestDTO);
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @DeleteMapping("/delete/{id}")
+    public Void deleteEmployer(@PathVariable Long id){
+        return employerService.deleteEmployer(id);
+    }
 }
