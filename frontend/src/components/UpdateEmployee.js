@@ -1,48 +1,61 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState,useEffect} from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import EmployerService from "../service/EmployerService";
 
-const AddEmployee = () => {
-  const [employer, setEmployer] = useState({
-    id: "",
-    firstName: "",
-    email: "",
-    phone: "",
-  });
+const UpdateEmployee = () => {
 
-  const navigate = useNavigate();
+      const navigate = useNavigate();
 
-  function handleChange(e) {
-    try {
-      const value = e.target.value;
-      setEmployer({ ...employer, [e.target.name]: value });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  const clearEmployer = (e) => {
-    e.preventDefault();
-    setEmployer({ id: "", firstName: "", email: "", phone: "" });
-  };
-
-  const saveEmployer = (e) => {
-    e.preventDefault();
-    EmployerService.saveEmployee(employer)
-      .then((res) => {
-        navigate("/employeeList");
-        console.log(res);
-      })
-      .catch((error) => {
-        alert("Ocorreu um erro: " + error.message);
+      const {id} = useParams();
+      
+      const [employer, setEmployer] = useState({
+        id: id,
+        firstName: "",
+        email: "",
+        phone: "",
       });
-    setEmployer({ id: "", firstName: "", email: "", phone: "" });
-  };
+
+      function handleChange(e) {
+        try {
+          const value = e.target.value;
+          setEmployer({ ...employer, [e.target.name]: value });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      
+      useEffect(() => {
+      const fetchData = async() => {
+      try{
+       const response = await EmployerService.getEmployeeById(id);
+       setEmployer(response.data);
+      } catch (e) {
+        console.log(e);
+      }};
+      fetchData();
+    }, [id]);
+      
+      
+    
+    const reset = (e) => {
+        e.preventDefault();
+        navigate(`/employeeList`);
+    }
+      
+      const updateEmployer = (e) => {
+        e.preventDefault();
+        EmployerService.updateEmployee(employer, id)
+          .then((res) => {
+            navigate("/employeeList");
+            console.log(res);
+          })
+      };
+
   return (
     <div className="flex max-w-2xl mx-auto shadow border-b">
       <div className="px-8 py-8">
         <div className="font-thin text-2xl text-wider">
-          <h1>Add New Employee</h1>
+          <h1>update Employer</h1>
         </div>
         <div className="items-center justify-center h-14 w-full my-4">
           <label className="block text-gray-600 font-sans">Name</label>
@@ -79,20 +92,20 @@ const AddEmployee = () => {
         </div>
         <div className="items-center justify-center h-14 w-full my-4 space-x-4 pt-4">
           <button
-            onClick={saveEmployer}
+            onClick={updateEmployer}
             className="bg-green-400 hover:bg-blue-800 text-white font-semibold py-2 px-6 rounded"
           >
-            Save
+            Update
           </button>
           <button
-            onClick={clearEmployer}
+            onClick={reset}
             className="bg-red-400 hover:bg-red-800 text-white font-semibold py-2 px-6  rounded"
           >
-            Clear
+            Cancel
           </button>
         </div>
       </div>
     </div>
   );
 };
-export default AddEmployee;
+export default UpdateEmployee;

@@ -26,6 +26,12 @@ public class EmployerController {
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/{id}")
+    public EmployerResponseTO getEmployer(@PathVariable Long id){
+        return employerService.getEmployer(id);
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PutMapping("/update/{id}")
     public EmployerRequestTO updateEmployer(@PathVariable Long id, @RequestBody EmployerRequestTO employerRequestDTO){
         return employerService.updateEmployer(id,employerRequestDTO);

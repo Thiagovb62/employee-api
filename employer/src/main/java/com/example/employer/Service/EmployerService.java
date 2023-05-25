@@ -28,6 +28,11 @@ public class EmployerService {
         employerRepository.save(employer);
         return employerRequestDTO;
     }
+
+    public EmployerResponseTO getEmployer(Long id){
+        Employer employer = employerRepository.findById(id).orElseThrow(() -> new RuntimeException("Employer not found"));
+        return new EmployerResponseTO(employer);
+    }
     public List<EmployerResponseTO> listAllEmployers(){
         return employerRepository.findAll().stream().map(EmployerResponseTO::new).toList();
     }
